@@ -1,0 +1,10 @@
+{
+    "signup": "Sign Up",
+    "username": "Username",
+    "email": "E-mail",
+    "password": "Password",
+    "passwordrepeat": "Password Repeat",
+    "send": "Send with Axios",
+    "errorPassword": "Passwords mismatch",
+    "okMessage": "Please check your email for activate your account."
+}

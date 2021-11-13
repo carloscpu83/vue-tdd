@@ -1,8 +1,8 @@
 <template>
   <div class="col-6 offset-3 col-md-8 offset-md-2">
-    <form data-testid="formulario" class="card mt-5" v-if="!requestIsSended">
+    <form data-testid="formulario" class="card mt-5" v-show="!requestIsSended">
       <div class="card-header">
-        <h1 data-testid="testing" class="text-center">Sign Up</h1>
+        <h1 data-testid="testing" class="text-center">{{ $t("signup") }}</h1>
       </div>
       <div class="card-body">
         <div class="mb-3">
@@ -11,7 +11,7 @@
             inputtestid="username"
             name="username"
             divtestid="errorUsername"
-            labelText="Nombre"
+            :labelText="$t('username')"
             :divText="errors.username"
             v-model="name"
             placeholder="Nombre"
@@ -24,7 +24,7 @@
             inputtestid="email"
             name="email"
             divtestid="errorEmail"
-            labelText="Email"
+            :labelText="$t('email')"
             :divText="errors.email"
             v-model="email"
             placeholder="Email"
@@ -37,7 +37,7 @@
             inputtestid="password"
             name="password"
             divtestid="errorPassword"
-            labelText="Password"
+            :labelText="$t('password')"
             :divText="errors.password || passwordNotEqualMessage"
             v-model="password"
             placeholder="Password"
@@ -48,7 +48,7 @@
             inputtestid="repeatPassword"
             name="repeatPassword"
             divtestid="errorRepeatPassword"
-            labelText="Repeat Password"
+            :labelText="$t('passwordrepeat')"
             v-model="repeatedPassword"
             tipo="password"
           />
@@ -71,7 +71,7 @@
               role="status"
               aria-hidden="true"
             ></span>
-            Enviar con AXIOS
+            {{ $t("send") }}
           </button>
           <input
             data-testid="sendButtonFetch"
@@ -87,18 +87,18 @@
       </div>
     </form>
     <div
-      v-else
+      v-show="requestIsSended"
       data-testid="formIsSendedLayout"
       class="alert alert-success"
       role="alert"
     >
-      Por favor comprueba tu email para activar la cuenta.
+      {{ $t("okMessage") }}
     </div>
   </div>
 </template>
-
 <script>
 import axios from "axios";
+import signUp from "../api/apiCalls.js";
 import InputText from "../components/InputText.vue";
 
 export default {
@@ -116,9 +116,9 @@ export default {
   },
   components: { InputText },
   watch: {
-    name(){
-      this.errors.username = '';
-    }
+    name() {
+      this.errors.username = "";
+    },
   },
   computed: {
     sendButtonIsDisable() {
@@ -127,9 +127,12 @@ export default {
     showingSpinner() {
       return this.activatedSpinner;
     },
-    passwordNotEqualMessage(){
-      return !this.passwordsAreEmpty() && this.password !== this.repeatedPassword ? 'Passwords mismatch' : '';
-    }
+    passwordNotEqualMessage() {
+      return !this.passwordsAreEmpty() &&
+        this.password !== this.repeatedPassword
+        ? this.$i18n.t("errorPassword")
+        : "";
+    },
   },
   methods: {
     passwordsAreEmpty() {
@@ -145,21 +148,20 @@ export default {
         password: this.password,
       };
     },
-    submitForm() {
+    async submitForm() {
       this.activatedSpinner = true;
-      axios
-        .post("/api/1.0/users", this.createUserRequest())
-        .then(() => {
-          this.requestIsSended = true;
-        })
-        .catch((error) => {
-          this.requestIsSended = false;
+
+      try{
+        await signUp(this.createUserRequest())
+        this.requestIsSended = true;
+      } catch (error){
+        this.requestIsSended = false;
           this.activatedSpinner = !this.activatedSpinner;
 
           if (error.response.status === 400) {
             this.errors = error.response.data.validationErrors;
           }
-        });
+      }
     },
     submitFormFetch() {
       const data = this.createUserRequest();

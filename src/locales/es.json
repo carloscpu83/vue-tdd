@@ -1,3 +1,10 @@
 {
-  "message": "hello i18n !!"
-}
+    "signup": "Registro",
+    "username": "Usuario",
+    "email": "E-mail",
+    "password": "Contraseña",
+    "passwordrepeat": "Repite Contraseña",
+    "send": "Enviar con Axios",
+    "errorPassword": "Contraseña no coincide",
+    "okMessage": "Por favor comprueba tu email para activar la cuenta."
+  }
