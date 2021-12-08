@@ -6,5 +6,12 @@
     "passwordrepeat": "Repite Contraseña",
     "send": "Enviar con Axios",
     "errorPassword": "Contraseña no coincide",
-    "okMessage": "Por favor comprueba tu email para activar la cuenta."
+    "okMessage": "Por favor comprueba tu email para activar la cuenta.",
+    "homepage": "Pagina principal",
+    "userpage": "Perfil",
+    "signuppage": "Registro",
+    "loginpage": "Ingresar",
+    "activation": "Activación",
+    "activationMessage": "La cuenta se encuentra activa.",
+    "activationMessageKO": "La cuenta no se encuentra activa."
   }

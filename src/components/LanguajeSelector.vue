@@ -1,28 +1,30 @@
 <template>
-  <span data-testid="esLanguage" @click="changeToSpanish">
-    <img
-      src="https://flagcdn.com/16x12/es.png"
-      srcset="
-        https://flagcdn.com/32x24/es.png 2x,
-        https://flagcdn.com/48x36/es.png 3x
-      "
-      width="16"
-      height="12"
-      alt="Spain"
-    />
-  </span>
-  <span data-testid="enLanguage" @click="changeToEnglish">
-    <img
-      src="https://flagcdn.com/16x12/gb.png"
-      srcset="
-        https://flagcdn.com/32x24/gb.png 2x,
-        https://flagcdn.com/48x36/gb.png 3x
-      "
-      width="16"
-      height="12"
-      alt="United Kingdom"
-    />
-  </span>
+  <div data-testid="languageSelector">
+    <span data-testid="esLanguage" @click="changeToSpanish">
+      <img
+        src="https://flagcdn.com/16x12/es.png"
+        srcset="
+          https://flagcdn.com/32x24/es.png 2x,
+          https://flagcdn.com/48x36/es.png 3x
+        "
+        width="16"
+        height="12"
+        alt="Spain"
+      />
+    </span>
+    <span data-testid="enLanguage" @click="changeToEnglish">
+      <img
+        src="https://flagcdn.com/16x12/gb.png"
+        srcset="
+          https://flagcdn.com/32x24/gb.png 2x,
+          https://flagcdn.com/48x36/gb.png 3x
+        "
+        width="16"
+        height="12"
+        alt="United Kingdom"
+      />
+    </span>
+  </div>
 </template>
 
 <script>

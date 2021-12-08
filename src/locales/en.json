@@ -6,5 +6,12 @@
     "passwordrepeat": "Password Repeat",
     "send": "Send with Axios",
     "errorPassword": "Passwords mismatch",
-    "okMessage": "Please check your email for activate your account."
+    "okMessage": "Please check your email for activate your account.",
+    "homepage": "Home Page",
+    "userpage": "User Page",
+    "signuppage": "Signup Page",
+    "loginpage": "Login",
+    "activation": "Activation",
+    "activationMessage": "Account is active now.",
+    "activationMessageKO": "Account is not active now."
 }

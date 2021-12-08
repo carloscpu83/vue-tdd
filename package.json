@@ -14,7 +14,8 @@
     "axios": "^0.24.0",
     "core-js": "^3.6.5",
     "vue": "^3.0.0",
-    "vue-i18n": "^9.1.0"
+    "vue-i18n": "^9.1.0",
+    "vue-router": "^4.0.12"
   },
   "devDependencies": {
     "@intlify/vue-i18n-loader": "^3.0.0",
@@ -62,6 +63,9 @@
     "transform": {
       ".*\\.(vue)$": "vue-jest",
       ".*\\.(js)$": "babel-jest"
+    },
+    "moduleNameMapper": {
+      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/testconfig/fileMock.js"
     }
   }
 }

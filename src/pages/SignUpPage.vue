@@ -1,5 +1,5 @@
 <template>
-  <div class="col-6 offset-3 col-md-8 offset-md-2">
+  <div data-testid="signUpPage" class="col-6 offset-3 col-md-8 offset-md-2">
     <form data-testid="formulario" class="card mt-5" v-show="!requestIsSended">
       <div class="card-header">
         <h1 data-testid="testing" class="text-center">{{ $t("signup") }}</h1>
