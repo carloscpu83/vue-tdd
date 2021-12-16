@@ -1,10 +1,10 @@
 import { render, screen, debug } from "@testing-library/vue";
 import "@testing-library/jest-dom";
-import i18n from "./locales/i18n.js";
-import App from "./App.vue";
+import i18n from "../../locales/i18n.js";
+import App from "../../App.vue";
 import userEvent from "@testing-library/user-event";
-import router from './router/routes.js'
-import signUp from "./api/apiCalls";
+import router from '../../router/routes.js'
+import signUp from "../../api/apiCalls";
 
 describe("Routing", () => {
   let homePageComponent,
