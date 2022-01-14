@@ -1,90 +1,90 @@
 <template>
   <div data-testid="signUpPage" class="col-6 offset-3 col-md-8 offset-md-2">
-    <form data-testid="formulario" class="card mt-5" v-show="!requestIsSended">
-      <div class="card-header">
-        <h1 data-testid="testing" class="text-center">{{ $t("signup") }}</h1>
-      </div>
-      <div class="card-body">
-        <div class="mb-3">
-          <InputText
-            inputid="username"
-            inputtestid="username"
-            name="username"
-            divtestid="errorUsername"
-            :labelText="$t('username')"
-            :divText="errors.username"
-            v-model="name"
-            placeholder="Nombre"
-            tipo="text"
-          />
-        </div>
-        <div class="mb-3">
-          <InputText
-            inputid="email"
-            inputtestid="email"
-            name="email"
-            divtestid="errorEmail"
-            :labelText="$t('email')"
-            :divText="errors.email"
-            v-model="email"
-            placeholder="Email"
-            tipo="text"
-          />
-        </div>
-        <div class="mb-3">
-          <InputText
-            inputid="password"
-            inputtestid="password"
-            name="password"
-            divtestid="errorPassword"
-            :labelText="$t('password')"
-            :divText="errors.password || passwordNotEqualMessage"
-            v-model="password"
-            placeholder="Password"
-            tipo="password"
-          />
-          <InputText
-            inputid="repeatPassword"
-            inputtestid="repeatPassword"
-            name="repeatPassword"
-            divtestid="errorRepeatPassword"
-            :labelText="$t('passwordrepeat')"
-            v-model="repeatedPassword"
-            tipo="password"
-          />
-        </div>
-        <div class="text-center mb-3">
-          <button
-            data-testid="sendButton"
-            id="sendButton"
-            name="sendButton"
-            type="button"
-            value="Enviar con AXIOS"
-            class="btn btn-primary"
-            :disabled="sendButtonIsDisable"
-            @click.prevent="submitForm"
-          >
-            <span
-              v-show="activatedSpinner"
-              data-testid="spinner"
-              class="spinner-border spinner-border-sm"
-              role="status"
-              aria-hidden="true"
-            ></span>
-            {{ $t("send") }}
-          </button>
-          <input
-            data-testid="sendButtonFetch"
-            id="sendButtonFetch"
-            name="sendButtonFetch"
-            type="button"
-            value="Enviar con FETCH"
-            class="btn btn-primary mx-1"
-            :disabled="sendButtonIsDisable"
-            @click.prevent="submitFormFetch"
-          />
-        </div>
-      </div>
+    <form data-testid="formulario" class="mt-5" v-show="!requestIsSended">
+      <card>
+        <template v-slot:header>
+          <h1 data-testid="testing" class="text-center">{{ $t("signup") }}</h1>
+        </template>
+        <template v-slot:body>
+          <div class="mb-3">
+            <InputText
+              inputid="username"
+              inputtestid="username"
+              name="username"
+              divtestid="errorUsername"
+              :labelText="$t('username')"
+              :divText="errors.username"
+              v-model="name"
+              placeholder="Nombre"
+              tipo="text"
+            />
+          </div>
+          <div class="mb-3">
+            <InputText
+              inputid="email"
+              inputtestid="email"
+              name="email"
+              divtestid="errorEmail"
+              :labelText="$t('email')"
+              :divText="errors.email"
+              v-model="email"
+              placeholder="Email"
+              tipo="text"
+            />
+          </div>
+          <div class="mb-3">
+            <InputText
+              inputid="password"
+              inputtestid="password"
+              name="password"
+              divtestid="errorPassword"
+              :labelText="$t('password')"
+              :divText="errors.password || passwordNotEqualMessage"
+              v-model="password"
+              placeholder="Password"
+              tipo="password"
+            />
+            <InputText
+              inputid="repeatPassword"
+              inputtestid="repeatPassword"
+              name="repeatPassword"
+              divtestid="errorRepeatPassword"
+              :labelText="$t('passwordrepeat')"
+              v-model="repeatedPassword"
+              tipo="password"
+            />
+          </div>
+          <div class="text-center mb-3">
+            <ButtonWithProgress
+              :testId="sendButton"
+              :id="sendButton"
+              :name="sendButton"
+              :disabled="sendButtonIsDisable"
+              :submit="submitForm"
+              :activatedSpinner="activatedSpinner"
+            >
+              <span
+                v-show="activatedSpinner"
+                data-testid="spinner"
+                class="spinner-border spinner-border-sm"
+                role="status"
+                aria-hidden="true"
+              ></span>
+              {{ $t("send") }}
+            </ButtonWithProgress>
+            <input
+              data-testid="sendButtonFetch"
+              id="sendButtonFetch"
+              name="sendButtonFetch"
+              type="button"
+              value="Enviar con FETCH"
+              class="btn btn-primary mx-1"
+              :disabled="sendButtonIsDisable"
+              @click.prevent="submitFormFetch"
+            />
+          </div>
+        </template>
+      </card>
     </form>
     <div
       v-show="requestIsSended"
@@ -97,10 +97,10 @@
   </div>
 </template>
 <script>
-import axios from "axios";
 import signUp from "../api/apiCalls.js";
 import InputText from "../components/InputText.vue";
-
+import ButtonWithProgress from "../components/ButtonWithProgress.vue";
+import Card from "../components/Card.vue";
 export default {
   name: "SignUpPage",
   data() {
@@ -114,7 +114,7 @@ export default {
       errors: {},
     };
   },
-  components: { InputText },
+  components: { InputText, ButtonWithProgress, Card },
   watch: {
     name() {
       this.errors.username = "";
@@ -151,16 +151,16 @@ export default {
     async submitForm() {
       this.activatedSpinner = true;
 
-      try{
-        await signUp(this.createUserRequest())
+      try {
+        await signUp(this.createUserRequest());
         this.requestIsSended = true;
-      } catch (error){
+      } catch (error) {
         this.requestIsSended = false;
-          this.activatedSpinner = !this.activatedSpinner;
+        this.activatedSpinner = !this.activatedSpinner;
 
-          if (error.response.status === 400) {
-            this.errors = error.response.data.validationErrors;
-          }
+        if (error.response.status === 400) {
+          this.errors = error.response.data.validationErrors;
+        }
       }
     },
     submitFormFetch() {

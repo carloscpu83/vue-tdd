@@ -13,5 +13,9 @@
     "loginpage": "Login",
     "activation": "Activation",
     "activationMessage": "Account is active now.",
-    "activationMessageKO": "Account is not active now."
+    "activationMessageKO": "Account is not active now.",
+    "users": "Users",
+    "previous": "Previous",
+    "next": "Next",
+    "login": "Login" 
 }

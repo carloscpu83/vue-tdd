@@ -1,7 +1,12 @@
 import axios from "axios";
 
-const userList = (numberPage = 0) => {
-    return axios.get("/api/1.0/users?page=" + numberPage);
+const userList = (page) => {
+    return axios.get("/api/1.0/users", {
+      params: {
+        page,
+        size: 3
+      }
+    });
   };
   
   export default userList;

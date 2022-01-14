@@ -4,13 +4,42 @@ import "@testing-library/jest-dom";
 import { setupServer } from "msw/node";
 import { rest } from "msw";
 import i18n from "../locales/i18n.js";
+import es from "../locales/es.json";
+import en from "../locales/en.json";
 
 import UserList from "./UserList.vue";
+import LanguageSelector from "../components/LanguajeSelector.vue";
 
-let server = setupServer();
+let server = setupServer(
+  rest.get("/api/1.0/users/", (req, res, ctx) => {
+    const page = parseInt(req.url.searchParams.get("page"));
+    const size = parseInt(req.url.searchParams.get("size"));
+
+    let realPage = isNaN(page) ? 0 : page;
+    let realSize = isNaN(size) ? 3 : size;
+
+    const paginateUSerList = getPaginateUsers(
+      realPage,
+      realSize,
+      page1.content
+    );
+    return res(ctx.status(200), ctx.json(paginateUSerList));
+  })
+);
 
 const setup = () => {
-  render(UserList, {
+  const app = {
+    components: {
+      UserList,
+      LanguageSelector,
+    },
+    template: `
+  <user-list />
+  <language-selector>
+  `,
+  };
+
+  render(app, {
     global: {
       plugins: [i18n],
     },
@@ -26,6 +55,19 @@ afterAll(() => {
 beforeEach(() => {
   server.resetHandlers();
 });
+
+const getPaginateUsers = (page, size, userList) => {
+  const startIdx = page * size;
+  const endIdx = startIdx + size;
+  const totalPages = Math.ceil(userList.length / size);
+  const content = userList.slice(startIdx, endIdx);
+  return {
+    content,
+    page,
+    size,
+    totalPages,
+  };
+};
 
 const page1 = {
   content: [
@@ -77,16 +119,121 @@ const page3 = {
 };
 
 describe("UserList page testing library", () => {
-  beforeEach(() => {
-    server.use(
-      rest.get("/api/1.0/users/", (req, res, ctx) => {
-        return res(ctx.status(200), ctx.json(page1));
-      })
-    );
-  });
-  it("Should displays 10 users in list page number one", async () => {
+  beforeEach(() => {});
+  it("Should displays 5 users in list page number one", async () => {
     setup();
     const users = await screen.findAllByText(/^user\d+$/);
-    expect(users.length).toBe(10);
+    expect(users.length).toBe(3);
+  });
+
+  it("Should displays next page link on the page", async () => {
+    setup();
+    const nextPageLink = await screen.findByTestId("nextPageLink");
+    expect(nextPageLink).toBeInTheDocument();
+  });
+
+  it("Should displays next elements after clicking on naxt page link", async () => {
+    setup();
+    const firstUser = await screen.findByText("user1");
+    expect(firstUser).toBeInTheDocument();
+    const nextPageLink = await screen.findByTestId("nextPageLink");
+    userEvent.click(nextPageLink);
+    const nextUser = await screen.findByText("user4");
+    expect(nextUser).toBeInTheDocument();
+  });
+
+  it("Should hide next page button at the last page", async () => {
+    setup();
+    const firstUser = await screen.findByText("user1");
+    expect(firstUser).toBeInTheDocument();
+    const nextPageLink = await screen.findByTestId("nextPageLink");
+    userEvent.click(nextPageLink);
+    userEvent.click(nextPageLink);
+    userEvent.click(nextPageLink);
+    const lastUser = await screen.findByText("user10");
+    expect(lastUser).toBeInTheDocument();
+    expect(nextPageLink).not.toBeVisible();
+  });
+
+  it("Should not displays previous page link at the first page", async () => {
+    setup();
+    const firstUser = await screen.findByText("user1");
+    expect(firstUser).toBeInTheDocument();
+    const previousPageLink = await screen.findByTestId("previousPageLink");
+    expect(previousPageLink).not.toBeVisible();
+  });
+
+  it("Should displays previous page link when actual page index between 1 and 3", async () => {
+    setup();
+    const firstUser = await screen.findByText("user1");
+    expect(firstUser).toBeInTheDocument();
+    const nextPageLink = await screen.findByTestId("nextPageLink");
+    userEvent.click(nextPageLink);
+    const previousPageLink = await screen.findByTestId("previousPageLink");
+    expect(previousPageLink).toBeVisible();
+    userEvent.click(nextPageLink);
+    expect(previousPageLink).toBeVisible();
+    userEvent.click(nextPageLink);
+    expect(previousPageLink).toBeVisible();
+  });
+
+  it("Should displays user1 after click previous page link when the actual page index is 1", async () => {
+    setup();
+    const firstUser = await screen.findByText("user1");
+    expect(firstUser).toBeInTheDocument();
+    const nextPageLink = await screen.findByTestId("nextPageLink");
+    userEvent.click(nextPageLink);
+    const previousPageLink = await screen.findByTestId("previousPageLink");
+    userEvent.click(previousPageLink);
+    const firstUserF = await screen.findByText("user1");
+    expect(firstUserF).toBeInTheDocument();
+  });
+
+  it("Should hides spinner after API call is finished", async () => {
+    setup();
+    const spinner = screen.queryByTestId("spinner");
+    const firstUser = await screen.findByText("user1");
+    expect(firstUser).toBeInTheDocument();
+    await new Promise((r) => setTimeout(r, 1000));
+    expect(spinner).not.toBeVisible();
+  });
+
+  it("Should displays spinner after clicking next button", async () => {
+    setup();
+    await screen.findByText("user1");
+    const nextButton = await screen.findByTestId("nextPageLink");
+    const spinner = await screen.findByTestId("spinner");
+    await userEvent.click(nextButton);
+    expect(spinner).toBeVisible();
+  });
+});
+
+describe("Internacionalization", () => {
+  it("Should displays header and navigation buttons in spanish", async () => {
+    setup();
+    const esLanguage = await screen.findByTestId("esLanguage");
+    await userEvent.click(esLanguage);
+    const nextButton = await screen.findByTestId("nextPageLink");
+    await userEvent.click(nextButton);
+    await userEvent.click(nextButton);
+    await screen.findByText("user4");
+
+    expect(screen.queryByText(es.users)).toBeInTheDocument();
+    expect(screen.queryByText(es.previous)).toBeInTheDocument();
+    expect(screen.queryByText(es.next)).toBeInTheDocument();
+  });
+
+  it("Should displays header and navigation buttons in english", async () => {
+    setup();
+    const esLanguage = await screen.findByTestId("enLanguage");
+    await userEvent.click(esLanguage);
+    const nextButton = await screen.findByTestId("nextPageLink");
+    await userEvent.click(nextButton);
+    await userEvent.click(nextButton);
+    await screen.findByText("user4");
+
+    expect(screen.queryByText(en.users)).toBeInTheDocument();
+    expect(screen.queryByText(en.previous)).toBeInTheDocument();
+    expect(screen.queryByText(en.next)).toBeInTheDocument();
   });
 });

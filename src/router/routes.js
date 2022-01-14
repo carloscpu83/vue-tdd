@@ -10,7 +10,7 @@ const routerConfig = [
   { path: "/", component: HomePageComponent },
   { path: "/login", component: LoginPageComponent },
   { path: "/signup", component: SignUpPageComponent },
-  { path: "/user", component: UserPageComponent },
+  { path: "/user/:id", component: UserPageComponent },
   { path: "/activation/:token", component: ActivationComponent },
 ];
 

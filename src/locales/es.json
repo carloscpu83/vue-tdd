@@ -13,5 +13,9 @@
     "loginpage": "Ingresar",
     "activation": "Activación",
     "activationMessage": "La cuenta se encuentra activa.",
-    "activationMessageKO": "La cuenta no se encuentra activa."
+    "activationMessageKO": "La cuenta no se encuentra activa.",
+    "users": "Usuarios",
+    "previous": "Anterior",
+    "next": "Siguiente",
+    "login": "Acceso"
   }
